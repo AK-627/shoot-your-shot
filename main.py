@@ -125,6 +125,31 @@ class StaticBlock:
     def draw(self,screen):
         pygame.draw.rect(screen,BLOCK_COLOR,self.rect)
 
+    def update(self):
+        pass
+
+class MovingBlock:
+    def __init__(self,x,y,w,h,speed:float,checkpoints:[pygame.Vector2]):
+        if len(checkpoints) == 0:
+            checkpoints = [pygame.Vector2(x,y)]
+        self.rect = pygame.Rect(x,y,w,h)
+        self.checkpoints = checkpoints 
+        self.current_checkpoint = 0
+        self.speed = speed
+
+    def draw(self,screen):
+        pygame.draw.rect(screen,BLOCK_COLOR,self.rect)
+
+    def update(self):
+        to = self.checkpoints[self.current_checkpoint]
+        rect_v = pygame.math.Vector2(self.rect.x,self.rect.y)
+
+        if (rect_v - to).magnitude() < 5:
+            self.current_checkpoint = (self.current_checkpoint + 1)  % len(self.checkpoints)
+        dir_ = (pygame.math.Vector2(self.rect.x,self.rect.y) - self.checkpoints[self.current_checkpoint]).normalize()
+        self.rect.x -= dir_.x * self.speed 
+        self.rect.y -= dir_.y * self.speed
+
 class LevelState(Enum):
     PLAYING = 1
     WON_ANIM = 2
@@ -195,6 +220,8 @@ class Level:
         match self.state:
             case LevelState.PLAYING:
                 self.ball.update(self.objects)
+                for obj in self.objects:
+                    obj.update()
             case LevelState.WON:
                 pass
 
@@ -237,6 +264,15 @@ def create_borders():
             ]
     return [ StaticBlock(v[0],v[1],v[2],v[3]) for v in rects ]
 
+def test_create_moving_block():
+    rects = [
+            (0,0), 
+            (SCREEN_W-50,0), 
+            (SCREEN_W-50,SCREEN_H-50), 
+            (0,SCREEN_H-50)    
+            ]
+    return MovingBlock(0,0,50,50,10,[pygame.Vector2(x,y) for (x,y) in rects])
+
 def draw_bg_squares(screen):
     start_x, end_x = BORDER_SIZE, SCREEN_W - BORDER_SIZE
     start_y, end_y = BORDER_SIZE, SCREEN_H - BORDER_SIZE
@@ -252,7 +288,10 @@ def draw_bg_squares(screen):
             count += 1
 
 
-LEVEL_0 = Level((SCREEN_W/2,SCREEN_H/2),(SCREEN_W/2,BORDER_SIZE+BALL_RADIUS + 5),create_borders())
+objs = create_borders()
+MB_W = 200
+objs.append(MovingBlock(50,100,MB_W,50,20,[pygame.math.Vector2(50,100),pygame.math.Vector2(SCREEN_W-50,100)]))
+LEVEL_0 = Level((SCREEN_W/2,SCREEN_H/2),(SCREEN_W/2,BORDER_SIZE+BALL_RADIUS + 5),objs)
 
 
 class GameState(Enum):
