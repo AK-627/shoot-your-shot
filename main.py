@@ -156,16 +156,25 @@ class Level:
         dir_v =  mouse_pos_initial_v - mouse_pos_final_v
 
 
-        self.ball.draw(screen)
-
         if self.mouse_initial_pos is not None and  dir_v.magnitude != 0:
+            x_vector = pygame.math.Vector2(1,0)
+            
+            theta = dir_v.angle_to(x_vector)
+
             dir_ = dir_v.normalize()
             rect = self.ball.rect
             o = pygame.math.Vector2(rect.x,rect.y)
-            p1 = o - (dir_.y * BALL_RADIUS,0)
-            p2 = o + (0,dir_.x * BALL_RADIUS)
-            p3 = o + dir_ * 10
-            pygame.draw.polygon(screen,BLACK,[p1,p2,p3])
+            p1_ = pygame.math.Vector2(BALL_RADIUS,0)
+            p2_ = pygame.math.Vector2(-BALL_RADIUS,0)
+            p3_ = pygame.math.Vector2(0,-BALL_RADIUS) 
+            
+            p1 = o + p1_.rotate(90-theta)
+            p2 = o + p2_.rotate(90-theta)
+            p3 = o + p3_.rotate(90-theta) *  max(2,dir_v.magnitude()//50) 
+            pygame.draw.polygon(screen,WHITE,[p1,p2,p3])
+
+        self.ball.draw(screen)
+
             
         for obj in self.objects:
             obj.draw(screen)
@@ -210,7 +219,7 @@ class Level:
                 pos = event.pos
                 if btn == MOUSE_BUTTON_ONE:
                     self.mouse_final_pos = pos
-                self.ball.calc_force(self.mouse_initial_pos,self.mouse_final_pos)
+                self.ball.calc_force(self.mouse_initial_pos or (0,0),self.mouse_final_pos or (0,0))
                 self.mouse_initial_pos = None
                 self.mouse_final_pos = None
                 return True
@@ -244,6 +253,12 @@ def draw_bg_squares(screen):
 
 
 LEVEL_0 = Level((SCREEN_W/2,SCREEN_H/2),(SCREEN_W/2,BORDER_SIZE+BALL_RADIUS + 5),create_borders())
+
+
+class GameState(Enum):
+    MAIN_MENU=1
+    LEVEL_SELECTOR=2
+
 
 def main():
 
