@@ -19,11 +19,14 @@ class Ball:
     def update(self,objects):
         # So we predict if the next position where our ball is going to be is gonna collide with something
         # We create a dummy rectangle to test our predicitions with and assign it the values our actual ball would take if we didnt check for collisions
-        rect = self.rect
-        rect.x += self.velocity * self.dir.x * STEP_BY 
-        rect.y += self.velocity * self.dir.y * STEP_BY 
 
         for obj in objects:
+            rect = self.rect.copy()
+            rect_x = rect.copy()
+            rect_y = rect.copy()
+            rect_x.x += self.velocity * self.dir.x 
+            rect_y.y += self.velocity * self.dir.y
+
             # Now, now, theres 4 cases.
             # 1.Ball collides a block with its top surface touching the block's bottom surface (ball makes contact with an object above it)
             # 2.Ball collides a block with its bottom surface touching the block's top surface
@@ -34,30 +37,21 @@ class Ball:
             # Example: If the ball touches an object on its right, we change the velocity (or here, the dir)'s x component to be the opposite of that
             # that is, dir.x = -dir.x
 
-            obj_rect = obj.rect().copy()
-            
-            if not rect.colliderect(obj_rect): continue
-            print("COllision at",obj_rect.x,obj_rect.y)
+            obj_rect = obj.rect()
 
-            dx = rect.centerx - obj_rect.centerx
-            dy = rect.centery - obj_rect.centery
-
-
-            overlap_x = (rect.width + obj_rect.width)/2 - abs(dx)
-            overlap_y = (rect.height + obj_rect.height)/2 - abs(dy)
-
-            if overlap_x < overlap_y:
+            # check for x-axis collision:
+            if rect_x.colliderect(obj_rect):
+                print("X COLLISION")
                 self.dir.x *= -1
-            else:
+            # check for y-axis collision:
+            if rect_y.colliderect(obj_rect):
+                print("Y COLLISION")
                 self.dir.y *= -1
-            self.move()
-
-            
         self.move()
 
     def move(self):
-        self.rect.x += self.velocity  * self.dir.x
-        self.rect.y += self.velocity * self.dir.y
+        self.rect.x += self.velocity  * self.dir.x 
+        self.rect.y += self.velocity * self.dir.y 
 
         if abs(self.velocity) > 1:
             self.velocity -= FRICTION * -1 if self.velocity < 0 else 1
