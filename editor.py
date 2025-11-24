@@ -42,10 +42,8 @@ class Object:
                 pygame.draw.rect(screen,BLOCK_COLOR,self.rect) 
             case ObjType.Hole:
                 pygame.draw.circle(screen,HOLE_COLOR,(self.rect.x+HOLE_RADIUS,self.rect.y+HOLE_RADIUS),HOLE_RADIUS)
-                
             case ObjType.BallStart:
                 pygame.draw.circle(screen,BALL_COLOR,(self.rect.x+BALL_RADIUS,self.rect.y+BALL_RADIUS),BALL_RADIUS)
-                pygame.draw.rect(screen,BLACK,self.rect,6)
 
 class ToolType(Enum):
     Object = 1,
