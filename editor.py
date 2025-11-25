@@ -210,7 +210,7 @@ class Editor:
             if event.key == pygame.K_5:
                 self.tool = Tool(ToolType.Eraser)
                 return True
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN or pygame.mouse.get_pressed()[0]:
             self.tool.use(self.objects)
 
         return False
