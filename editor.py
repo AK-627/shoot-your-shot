@@ -102,7 +102,7 @@ class Tool():
     def use_eraser(self,objects):
         rect = self.rect
         for (i,obj) in enumerate(objects):
-            if obj.rect.colliderect(rect):
+            if obj.rect.colliderect(rect) and obj.editable:
                 objects.pop(i)
                 break
     def draw_preview(self,screen,objs):
