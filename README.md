@@ -13,6 +13,16 @@ Then run this command to install the requirements
 py -m pip install -r requirements.txt
 ```
 
+## Editor Controls
+### Tools
+Press the keys to equip the tools in the editor:
+1 => Static Block
+2 => Moving Block (WIP)
+3 => Ball Starting Position
+4 => Hole
+5 => Eraser
+
+
 
 # Credits:
 Aston (PES2UG25CS108)
