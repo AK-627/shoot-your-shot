@@ -45,27 +45,30 @@ class Level:
         self.onlevelend = onlevelend
 
     def draw(self):
-        mouse_pos_initial_v = pygame.math.Vector2(self.mouse_initial_pos or (self.ball.rect.x,self.ball.rect.y))
-        mouse_pos_final_v = pygame.math.Vector2(self.mouse_final_pos or (self.ball.rect.x,self.ball.rect.y))
-        dir_v =  mouse_pos_initial_v - mouse_pos_final_v
 
 
-        if self.mouse_initial_pos is not None and  dir_v.magnitude != 0:
-            x_vector = pygame.math.Vector2(1,0)
-            
-            theta = dir_v.angle_to(x_vector)
 
-            dir_ = dir_v.normalize()
-            rect = self.ball.rect
-            o = pygame.math.Vector2(rect.x,rect.y)
-            p1_ = pygame.math.Vector2(BALL_RADIUS,0)
-            p2_ = pygame.math.Vector2(-BALL_RADIUS,0)
-            p3_ = pygame.math.Vector2(0,-BALL_RADIUS) 
-            
-            p1 = o + p1_.rotate(90-theta)
-            p2 = o + p2_.rotate(90-theta)
-            p3 = o + p3_.rotate(90-theta) *  max(2,dir_v.magnitude()//50) 
-            pygame.draw.polygon(self.screen,WHITE,[p1,p2,p3])
+        if self.mouse_initial_pos is not None and self.mouse_final_pos is not None :
+            mouse_pos_initial_v = pygame.math.Vector2(self.mouse_initial_pos or (self.ball.rect.x,self.ball.rect.y))
+            mouse_pos_final_v = pygame.math.Vector2(self.mouse_final_pos or (self.ball.rect.x,self.ball.rect.y))
+            dir_v =  mouse_pos_initial_v - mouse_pos_final_v
+            if dir_v.magnitude() != 0:
+
+                x_vector = pygame.math.Vector2(1,0)
+
+                theta = dir_v.angle_to(x_vector)
+
+                dir_ = dir_v.normalize()
+                rect = self.ball.rect
+                o = pygame.math.Vector2(rect.x,rect.y)
+                p1_ = pygame.math.Vector2(BALL_RADIUS,0)
+                p2_ = pygame.math.Vector2(-BALL_RADIUS,0)
+                p3_ = pygame.math.Vector2(0,-BALL_RADIUS) 
+
+                p1 = o + p1_.rotate(90-theta)
+                p2 = o + p2_.rotate(90-theta)
+                p3 = o + p3_.rotate(90-theta) *  max(2,dir_v.magnitude()//50) 
+                pygame.draw.polygon(self.screen,WHITE,[p1,p2,p3])
 
         for obj in self.objects:
             obj.draw()
@@ -73,7 +76,7 @@ class Level:
         
         self.ball.draw()
 
-        text_surface = self.font.render('Your score: {}'.format(self.num_strokes),True,WHITE)
+        text_surface = self.font.render('Number of strokes: {}'.format(self.num_strokes),True,WHITE)
         self.screen.blit(text_surface,(BORDER_SIZE+10,30))
 
 
@@ -114,12 +117,13 @@ class Level:
                 return True
             case pygame.MOUSEBUTTONUP:
                 if not self.mouse_initial_pos or not self.mouse_final_pos: return False
-                self.num_strokes += 1
                 btn = event.button
                 pos = event.pos
                 if btn == MOUSE_BUTTON_ONE:
                     self.mouse_final_pos = pos
-                self.ball.calc_force(self.mouse_initial_pos or (0,0),self.mouse_final_pos or (0,0))
+                    self.ball.calc_force(self.mouse_initial_pos or (0,0),self.mouse_final_pos or (0,0))
+                    if (pygame.math.Vector2(self.mouse_initial_pos)-pygame.math.Vector2(self.mouse_final_pos)).magnitude() != 0:
+                        self.num_strokes += 1
                 self.mouse_initial_pos = None
                 self.mouse_final_pos = None
                 return True

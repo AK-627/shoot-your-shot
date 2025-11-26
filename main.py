@@ -41,8 +41,7 @@ LEVEL_1.from_dict(
 
 class AppState(Enum):
     Menu = 1,
-
-Playing = 2
+    Playing = 2
 
 class App:
     def __init__(self):
