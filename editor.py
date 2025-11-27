@@ -22,6 +22,13 @@ SCREEN_W,SCREEN_H = 1500,720
 
 SNAP_BY = BORDER_SIZE
 
+
+
+MAX_W = PLAY_SCREEN_W 
+MIN_W = 5 
+MAX_H = PLAY_SCREEN_H
+MIN_H = 5 
+
 class ObjType(Enum):
     StaticBlock = 1,
     MovingBlock = 2,
@@ -112,10 +119,7 @@ class Tool():
                 if rect.colliderect(obj.rect):
                     match obj.type:
                         case ObjType.StaticBlock | ObjType.MovingBlock:
-                            nrect = self.rect.copy()
-                            nrect.w = BORDER_SIZE
-                            nrect.h = BORDER_SIZE
-                            pygame.draw.rect(screen,BLACK,nrect,7)
+                            pygame.draw.rect(screen,BLACK,obj.rect,7)
                         case ObjType.Hole:
                             pygame.draw.circle(screen,BLACK,(rect.x,rect.y),HOLE_RADIUS,5)
                             
@@ -227,7 +231,24 @@ class Editor:
         if event.type == pygame.MOUSEBUTTONDOWN or pygame.mouse.get_pressed()[0]:
             self.redo_buf = []
             self.tool.use(self.objects)
+            return True
+        
+        if keys[pygame.K_w] or keys[pygame.K_h]:
+            if self.tool.type == ToolType.Eraser: return False
+            if keys[pygame.K_w]:
+                self.tool.rect.w += 5  * (-1 if keys[pygame.K_LSHIFT] else 1)
+                if self.tool.rect.w > MAX_W:
+                    self.tool.rect.w = MAX_W
+                if self.tool.rect.w < MIN_W:
+                    self.tool.rect.w = MIN_W
 
+            if keys[pygame.K_h]:
+                self.tool.rect.h += 5  * (-1 if keys[pygame.K_LSHIFT] else 1)
+                if self.tool.rect.h > MAX_H:
+                    self.tool.rect.h = MAX_H
+                if self.tool.rect.h < MIN_H:
+                    self.tool.rect.h = MIN_H
+            return True
         return False
 
     def into_level(self) -> level.Level:
@@ -287,7 +308,7 @@ def main():
 
         editor.update()
         screen.fill(BG_COLOR)
-        editor.draw(screen)
+        editor.draw()
         pygame.display.flip()
     pygame.quit()
 

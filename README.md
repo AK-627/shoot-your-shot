@@ -22,10 +22,15 @@ Press the keys to equip the tools in the editor:
 4 => Hole
 5 => Eraser
 
+### Tool Size Changing
+- w to increase width
+- h to increase height
+Press LEFT SHIFT to decrease when pressing the respective key.
+
 
 
 # Credits:
-Aston (PES2UG25CS108)
-Main Menu - Ahmed (PES2UG25EC012)
-Sound effects, background music, levels - Deekshith (PES2UG25CS153)
-SRS and GUI - Anish (PES2UG25CS074)
+- Aston (PES2UG25CS108)
+- Main Menu - Ahmed (PES2UG25EC012)
+- Sound effects, background music, levels - Deekshith (PES2UG25CS153)
+- SRS and GUI - Anish (PES2UG25CS074)
