@@ -15,7 +15,7 @@ class LevelState(Enum):
     Manages everything realted to a specific level (like collisions, drawing, drawing menus etc)
 """
 class Level:
-    def __init__(self,screen,start,end,objs):
+    def __init__(self,screen,start,end,objs,switchstateonwin=None):
         self.screen = screen
         self.ball_start = start
         self.ball = Ball(self.screen,start[0],start[1])
@@ -36,13 +36,14 @@ class Level:
 
         self.level_end_anim = 0.0
 
-        def onlevelend():
+        def onlevelwin():
             self.state = LevelState.WON
             self.ball.rect.x = self.ball_end[0]
             self.ball.rect.y = self.ball_end[1]
             self.level_end_anim = 0.0
 
-        self.onlevelend = onlevelend
+        self.onlevelwin = onlevelwin
+        self.switchstateonwin = None
 
     def draw(self):
 
@@ -80,13 +81,18 @@ class Level:
         self.screen.blit(text_surface,(BORDER_SIZE+10,30))
 
 
+
+
     def update(self):
+        if self.state == LevelState.WON and self.level_end_anim == 1.0 and self.switchstateonwin: 
+            self.switchstateonwin()
+
         end_rect = pygame.Rect(self.ball_end[0],self.ball_end[1],HOLE_RADIUS,HOLE_RADIUS)
 
         ball_rect = self.ball.rect
         if ball_rect.colliderect(end_rect):
             self.state = LevelState.WON
-            self.onlevelend()
+            self.onlevelwin()
             
         match self.state:
             case LevelState.PLAYING:
@@ -97,8 +103,9 @@ class Level:
                 if self.ball.radius > 1.0:
                    self.ball.radius -= 0.5 * self.ball.radius/10
                 else:
-                    # TODO: show next level screen
-                    pass
+                    print('a')
+                    if self.switchstateonwin:
+                        self.switchstateonwin()
                     
     """
         Handles Mouse Events.

@@ -16,6 +16,7 @@ from level import Level
 import editor
 from editor import Editor
 from block import Block, StaticBlock, MovingBlock
+from level_over_menu import LevelOverMenu
 
 
 pygame.display.set_caption("Shoot Your Shot")
@@ -39,24 +40,36 @@ LEVEL_1.from_dict(
 {'ball_start': (660, 240), 'ball_end': (150, 270), 'ball': {'rect': {'x': 660, 'y': 240, 'w': 15, 'h': 15}, 'velocity': 0.0, 'dir': {'x': 0.0, 'y': 0.0}}, 'objects': [{'inner': {'rect': {'x': 0, 'y': 0, 'w': 1280, 'h': 30}}}, {'inner': {'rect': {'x': 0, 'y': 690, 'w': 1280, 'h': 30}}}, {'inner': {'rect': {'x': 0, 'y': 30, 'w': 30, 'h': 690}}}, {'inner': {'rect': {'x': 1250, 'y': 30, 'w': 30, 'h': 720}}}, {'inner': {'rect': {'x': 300, 'y': 210, 'w': 30, 'h': 30}}}, {'inner': {'rect': {'x': 360, 'y': 240, 'w': 30, 'h': 30}}}, {'inner': {'rect': {'x': 390, 'y': 240, 'w': 30, 'h': 30}}}, {'inner': {'rect': {'x': 360, 'y': 300, 'w': 30, 'h': 30}}}, {'inner': {'rect': {'x': 480, 'y': 240, 'w': 30, 'h': 30}}}, {'inner': {'rect': {'x': 420, 'y': 300, 'w': 30, 'h': 30}}}]}
 )
 
-#LEVELS = [LEVEL_0,LEVEL_1]
-
 class AppState(Enum):
     Menu = 1,
     Playing = 2,
-    Editor = 3
+    Editor = 3,
+    LevelWon = 4,
 
 class App:
     def __init__(self):
         self.state = AppState.Menu
-        def play():
-            level = self.inner.selected_level.to_level()
-            self.inner = level
-            self.state = AppState.Playing
+        
         def oneditor():
             SCREEN = pygame.display.set_mode((editor.SCREEN_W,editor.SCREEN_H))
             self.inner = Editor(SCREEN)
             self.state = AppState.Editor
+        def play():
+            selected_level = self.inner.selected_level
+            level = self.inner.selected_level.to_level()
+            def onlevelwin():
+                self.state = AppState.LevelWon
+                def newlevel():
+                    from main_menu import SelectedLevelType, SelectedLevel
+                    self.inner = SelectedLevel(SelectedLevelType.Premade,selected_level.val+1).to_level()
+                    self.inner.switchstateonwin = onlevelwin
+                def backtomenu():
+                    self.state = AppState.Menu
+                    self.inner = Menu(play,oneditor) 
+                self.inner = LevelOverMenu(self.inner.num_strokes,newlevel,backtomenu)
+            level.switchstateonwin = onlevelwin
+            self.inner = level
+            self.state = AppState.Playing
         self.inner = Menu(play,oneditor)
 
     def handle_input(self,event):

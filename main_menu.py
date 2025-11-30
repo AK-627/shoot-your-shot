@@ -56,6 +56,7 @@ class Menu:
                 if self.state == MenuState.Main:
                     running = False
                 else:
+                    print("her")
                     self.state = MenuState.Main 
                 return True
 
@@ -94,6 +95,7 @@ class Menu:
                         return True
                     # Back
                     if self.ui_drawn["back"].collidepoint(pos):
+                        print('here')
                         self.state = MenuState.Main 
                         return True
                                                 
@@ -115,6 +117,7 @@ class Menu:
                         if self.onplaybuttonclicked: self.onplaybuttonclicked()
 
                     if self.ui_drawn["back"].collidepoint(pos):
+                        print('maybe here')
                         self.state = MenuState.Main
                         return True
         return False
@@ -354,4 +357,4 @@ class SelectedLevel:
                     level = LEVEL_0
                     level.from_dict(contents)
                     return level
-
+ 
