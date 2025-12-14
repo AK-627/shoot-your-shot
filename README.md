@@ -15,7 +15,7 @@
 ## 🖼️Screenshots
 
 ![alt text](https://github.com/[AK-627]/[shoot-your-shot]/blob/[assets]/main_menu.png?raw=true)
-![alt text](https://github.com/[AK-627]/[shoot-your-shot]/blob/[assets]/IN.jpg?raw=true)
+![Gameplay Screenshot](assets/main_menu.png)
 
 
 ## ⏯️Installation
