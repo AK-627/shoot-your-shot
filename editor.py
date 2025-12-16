@@ -7,9 +7,10 @@ from dataclasses import dataclass
 
 from enum import Enum
 import pygame
-import pygame_gui
 
 from constants import *
+
+import ui_misc
 import level
 import block
 
@@ -21,8 +22,6 @@ PLAY_SCREEN_H = SCREEN_H
 SCREEN_W,SCREEN_H = 1500,720
 
 SNAP_BY = BORDER_SIZE
-
-
 
 MAX_W = PLAY_SCREEN_W 
 MIN_W = BORDER_SIZE 
@@ -156,6 +155,27 @@ def create_borders():
             ]
     return [ Object(ObjType.StaticBlock,v[0],v[1],v[2],v[3],False) for v in rects ]
 
+class UIButton:
+    def __init__(self,rect:pygame.Rect,text:str,onclicked=None):
+        self.rect = rect
+        self.text = text
+        self.isclicked = False
+        self.onclicked = onclicked
+
+    def is_hovered(self):
+        mouse_pos = pygame.mouse.get_pos()
+        return self.rect.collidepoint(mouse_pos)
+
+    def draw(self,screen):
+        hover_val = int(self.is_hovered())
+        ui_misc.draw_button_scaled(screen,self.rect,self.text,hover_val)
+
+    def update(self,event):
+
+        self.isclicked = self.is_hovered() and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
+        if self.isclicked and self.onclicked: self.onclicked()
+        return self.isclicked
+
 class Editor:
     def __init__(self,screen):
         self.screen = screen
@@ -163,12 +183,36 @@ class Editor:
         self.tool = Tool(ToolType.Object,ObjType.StaticBlock)
         self.redo_buf = []
 
+        tools = [ Tool(ToolType.Eraser),
+                 *[Tool(ToolType.Object,o) for o in ObjType]
+                 ]
+
         self.file_name = False
+        
+        buttons = []
+        NUM_BTNS_IN_ROW = 2
+        y = BORDER_SIZE
+        BUTTON_H = 100
+        def change_to_tool_0(): self.tool = tools[0]
+        def change_to_tool_1(): self.tool = tools[1]
+        def change_to_tool_2(): self.tool = tools[2]
+        def change_to_tool_3(): self.tool = tools[3]
+        def change_to_tool_4(): self.tool = tools[4]
+        
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W,BUTTON_H,100,BUTTON_H),"start",change_to_tool_0))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+100,BUTTON_H,100,BUTTON_H),"idk",change_to_tool_1))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W,BUTTON_H*2,100,BUTTON_H),"idk again",change_to_tool_2))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+100,BUTTON_H*2,100,BUTTON_H),"who knows",change_to_tool_3))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W,BUTTON_H*3,100,BUTTON_H),"not me",change_to_tool_4))
+        
+        self.buttons = buttons 
 
     def draw(self):
         for obj in self.objects:
             obj.draw(self.screen)
         self.tool.draw_preview(self.screen,self.objects)
+        for btn in self.buttons:
+            btn.draw(self.screen)
 
     def update(self):
         self.tool.update(None,self.objects)
@@ -196,7 +240,9 @@ class Editor:
 
     def process_event(self,event) -> bool:
         keys = pygame.key.get_pressed()
-        
+
+        for btn in self.buttons: 
+            if btn.update(event): return True 
         if keys[pygame.K_LCTRL]:
             if keys[pygame.K_z]:
                 self.undo()
@@ -298,6 +344,10 @@ def main():
     clock = pygame.time.Clock()
     running = True
     editor = Editor(screen)
+    btn = UIButton(pygame.Rect(250,250,100,100),"Hello!")
+    def onclicked():
+        print("you clciedk the button")
+    btn.onclicked = onclicked
     while running:
         time_delta = clock.tick(FPS)/1000
         for event in pygame.event.get():
@@ -309,6 +359,7 @@ def main():
         editor.update()
         screen.fill(BG_COLOR)
         editor.draw()
+        btn.draw(screen)
         pygame.display.flip()
     pygame.quit()
 
