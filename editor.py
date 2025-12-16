@@ -19,7 +19,7 @@ pygame.font.init()
 
 PLAY_SCREEN_W = SCREEN_W
 PLAY_SCREEN_H = SCREEN_H
-SCREEN_W,SCREEN_H = 1500,720
+SCREEN_W,SCREEN_H = 1600,720
 
 SNAP_BY = BORDER_SIZE
 
@@ -148,10 +148,10 @@ class Tool():
 
 def create_borders():
     rects = [
-            (0,0,PLAY_SCREEN_W,BORDER_SIZE), 
-            (0,PLAY_SCREEN_H-BORDER_SIZE,PLAY_SCREEN_W,BORDER_SIZE), 
-            (0,BORDER_SIZE,BORDER_SIZE,PLAY_SCREEN_H-BORDER_SIZE), 
-            (PLAY_SCREEN_W-BORDER_SIZE,BORDER_SIZE,BORDER_SIZE,PLAY_SCREEN_H)    
+            (0,0,PLAY_SCREEN_W+10,BORDER_SIZE), 
+            (0,PLAY_SCREEN_H-BORDER_SIZE+10,PLAY_SCREEN_W,BORDER_SIZE), 
+            (0,BORDER_SIZE,BORDER_SIZE,PLAY_SCREEN_H-BORDER_SIZE+10), 
+            (PLAY_SCREEN_W-BORDER_SIZE+10,BORDER_SIZE,BORDER_SIZE,PLAY_SCREEN_H)    
             ]
     return [ Object(ObjType.StaticBlock,v[0],v[1],v[2],v[3],False) for v in rects ]
 
@@ -199,11 +199,11 @@ class Editor:
         def change_to_tool_3(): self.tool = tools[3]
         def change_to_tool_4(): self.tool = tools[4]
         
-        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W,BUTTON_H,100,BUTTON_H),"start",change_to_tool_0))
-        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+100,BUTTON_H,100,BUTTON_H),"idk",change_to_tool_1))
-        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W,BUTTON_H*2,100,BUTTON_H),"idk again",change_to_tool_2))
-        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+100,BUTTON_H*2,100,BUTTON_H),"who knows",change_to_tool_3))
-        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W,BUTTON_H*3,100,BUTTON_H),"not me",change_to_tool_4))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,100,200,50),"Erase",change_to_tool_0))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,200,200,50),"Box",change_to_tool_1))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,300,200,50),"Save",change_to_tool_2))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,400,200,50),"Hole",change_to_tool_3))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,500,200,50),"Ball",change_to_tool_4))
         
         self.buttons = buttons 
 
