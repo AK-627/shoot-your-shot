@@ -2,10 +2,12 @@ import pygame
 from serde import *
 from constants import *
 
+from debug import is_debug
+
 class Ball:
     def __init__(self,screen,x,y):
         self.screen = screen
-        self.rect = pygame.Rect(x,y,BALL_RADIUS,BALL_RADIUS)
+        self.rect = pygame.Rect(x,y,2*BALL_RADIUS,2*BALL_RADIUS)
         # You may wonder why we represent velocity as a scalar but also have a dir vector component. it just works better this way
         self.dir = pygame.math.Vector2(0,0)
         self.velocity = 0.0 
@@ -14,14 +16,20 @@ class Ball:
         self.radius = BALL_RADIUS
 
     def draw(self):
-        pygame.draw.circle(self.screen,BALL_COLOR,(self.rect.x,self.rect.y),self.radius)
+        # pygame draws the circle form the center, unlike a rect which it draws from the top left corner. So to avoid a discrepency, we offset the circle by self.radius
+        pygame.draw.circle(self.screen,BALL_COLOR,(self.rect.x+self.radius,self.rect.y+self.radius),self.radius)
 
         # border
-        pygame.draw.circle(self.screen,BLACK,(self.rect.x,self.rect.y),self.radius,2)
+        pygame.draw.circle(self.screen,BLACK,(self.rect.x+self.radius,self.rect.y+self.radius),self.radius,2)
+
+        # debug rect
+        if is_debug:
+            pygame.draw.rect(self.screen,BLACK,self.rect,2)
    
     def update(self,objects):
         # So we predict if the next position where our ball is going to be is gonna collide with something
         # We create a dummy rectangle to test our predicitions with and assign it the values our actual ball would take if we didnt check for collisions
+        has_collided = False
 
         for obj in objects:
             rect = self.rect.copy()
@@ -47,10 +55,13 @@ class Ball:
 
             # check for x-axis collision:
             if rect_x.colliderect(obj_rect):
+                has_collided = True
                 self.dir.x *= -1
             # check for y-axis collision:
             if rect_y.colliderect(obj_rect):
+                has_collided = True
                 self.dir.y *= -1
+        print(has_collided,self.velocity)
         self.move()
 
     def move(self):
