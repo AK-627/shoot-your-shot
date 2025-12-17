@@ -73,11 +73,12 @@ def load_levels_dict():
     if not os.path.exists(LEVELS_PATH): return []
     levels = []
     files = os.listdir(LEVELS_PATH)
-    for file_name in files:
+    for file_name in sorted(files):
         with open(LEVELS_PATH+'/'+file_name,'r') as file:
             conts = file.read()
             contents = json.loads(conts)
             levels.append(contents)
+
     return levels
     
 LEVELS_DICTS = load_levels_dict()

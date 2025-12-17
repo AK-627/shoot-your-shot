@@ -61,12 +61,13 @@ class App:
                 self.state = AppState.LevelWon
                 def newlevel():
                     from main_menu import SelectedLevelType, SelectedLevel
-                    self.inner = SelectedLevel(SelectedLevelType.Premade,selected_level.val+1).to_level()
+                    level_num = self.inner.next_level_num or 0
+                    self.inner = SelectedLevel(SelectedLevelType.Premade,level_num).to_level()
                     self.inner.switchstateonwin = onlevelwin
                 def backtomenu():
                     self.state = AppState.Menu
                     self.inner = Menu(play,oneditor) 
-                self.inner = LevelOverMenu(self.inner.num_strokes,newlevel,backtomenu,selected_level.type == SelectedLevelType.Premade)
+                self.inner = LevelOverMenu(selected_level,self.inner.num_strokes,newlevel,backtomenu,self.inner.level_num+1)
             level.switchstateonwin = onlevelwin
             self.inner = level
             self.state = AppState.Playing

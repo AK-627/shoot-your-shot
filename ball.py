@@ -61,7 +61,6 @@ class Ball:
             if rect_y.colliderect(obj_rect):
                 has_collided = True
                 self.dir.y *= -1
-        print(has_collided,self.velocity)
         self.move()
 
     def move(self):

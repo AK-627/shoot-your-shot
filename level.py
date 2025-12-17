@@ -15,13 +15,14 @@ class LevelState(Enum):
     Manages everything realted to a specific level (like collisions, drawing, drawing menus etc)
 """
 class Level:
-    def __init__(self,screen,start,end,objs,switchstateonwin=None,is_premade:bool=False):
+    def __init__(self,screen,start,end,objs,switchstateonwin=None,is_premade:bool=False,level_num=None):
         self.screen = screen
         self.ball_start = start
         self.ball = Ball(self.screen,start[0],start[1])
         self.ball_end = end
         self.objects = objs
         self.is_premade = is_premade
+        self.level_num = level_num
 
         self.state = LevelState.PLAYING
         # This stores the initial and final/current position of the mouse when it was first clicked at the start of every shot
@@ -60,7 +61,8 @@ class Level:
 
                 dir_ = dir_v.normalize()
                 rect = self.ball.rect
-                o = pygame.math.Vector2(rect.x,rect.y)
+                radius = self.ball.radius
+                o = pygame.math.Vector2(rect.x+radius,rect.y+radius)
                 p1_ = pygame.math.Vector2(BALL_RADIUS,0)
                 p2_ = pygame.math.Vector2(-BALL_RADIUS,0)
                 p3_ = pygame.math.Vector2(0,-BALL_RADIUS) 

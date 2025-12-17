@@ -230,8 +230,8 @@ class Editor:
         def change_to_tool_4(): self.tool = tools[4]
         
         buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,100,200,50),"Erase",change_to_tool_0))
-        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,200,200,50),"Box",change_to_tool_1))
-        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,300,200,50),"Save",change_to_tool_2))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,200,200,50),"Block",change_to_tool_1))
+        buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,300,200,50),"Moving Block",change_to_tool_2))
         buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,400,200,50),"Hole",change_to_tool_3))
         buttons.append(UIButton(pygame.Rect(PLAY_SCREEN_W+20,500,200,50),"Ball",change_to_tool_4))
         
